@@ -1,0 +1,43 @@
+*
+*/**
+#  ────────────────────────────────────────────────────────────────────
+!/specs
+!/specs/basic
+!/specs/templated
+!/specs/templated/*
+!/specs/templated/*/*.nomad
+!/specs/templated/*/*.yml
+!/specs/templated/*/config
+!/specs/templated/*/config/**
+#  ────────────────────────────────────────────────────────────────────
+!.devcontainer/alpine.Dockerfile
+!.devcontainer/archlinux.Dockerfile
+!.devcontainer/devcontainer.json
+# ────────────────────────────────────────────────────────────
+!/.vscode
+!/.vscode/*
+#  ────────────────────────────────────────────────────────────────────
+!/todo.txt
+# linter ignore files
+!/.markdownlintignore
+!/.remarkrc.yaml
+
+!/.editorconfig
+!/.gitignore
+!/.gitattributes
+!/.dockerignore
+!/.gitpod.yml
+!/.build.yml
+!/.stignore
+!/.versionrc
+!/.pre-commit-config.yaml
+!/.env
+!/LICENSE
+!/README.md
+!/commitlint.config.js
+!/Justfile
+!/Makefile
+!/Vagrantfile
+!/docker-bake.hcl
+!/CONTRIBUTING.md
+!/CHANGELOG.md
