@@ -1,0 +1,96 @@
+---
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+alerting:
+  alertmanagers:
+    - tls_config:
+        insecure_skip_verify: true
+      consul_sd_configs:
+      - server: "http://{{ env "attr.unique.network.ip-address" }}:8500"
+        tls_config:
+          insecure_skip_verify: true
+        services: ["alertmanager-service"]
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:{{ env "NOMAD_PORT_prometheus_ui" }}"]
+    relabel_configs:
+      - target_label: instance
+        replacement: "{{ env "attr.unique.hostname" }}"
+      - target_label: service
+        replacement: "prometheus"
+  - job_name: "consul-services"
+    tls_config:
+      insecure_skip_verify: true
+    consul_sd_configs:
+      - server: "http://{{ env "attr.unique.network.ip-address" }}:8500"
+        tls_config:
+          insecure_skip_verify: true
+        tags: [
+          "prometheus"
+        ]
+    relabel_configs:
+      - source_labels: [__meta_consul_tags]
+        separator: ','
+        regex: label:([^=]+)=([^,]+)
+        target_label: ${1}
+        replacement: ${2}
+      - source_labels: [__meta_consul_node]
+        target_label: instance
+      - source_labels: [__meta_consul_service]
+        target_label: service
+      # Add the IP address
+      - source_labels: [__meta_consul_address]
+        target_label: address
+      # Add the service port
+      - source_labels: [__meta_consul_service_port]
+        target_label: service_port
+      - source_labels: [__meta_consul_service_address]
+        target_label: service_address
+  - job_name: 'nomad'
+    # [QUESTION] => can this lead to an explosive growth in storage usage    
+    scrape_interval: 5s
+    metrics_path: /v1/metrics
+    tls_config:
+      insecure_skip_verify: true
+    consul_sd_configs:
+    - server: "http://{{ env "attr.unique.network.ip-address" }}:8500"
+      tls_config:
+        insecure_skip_verify: true
+      services: [
+        "nomad-client",
+        "nomad",
+      ]
+    params:
+      format: ['prometheus']
+    relabel_configs:
+    - source_labels: ['__meta_consul_tags']
+      regex: '(.*)http(.*)'
+      action: keep
+    - source_labels: [__meta_consul_service]
+      regex: (nomad-client|nomad)
+      target_label: __scheme__
+      replacement: http
+  - job_name: traefik
+    metrics_path: /metrics
+    tls_config:
+      insecure_skip_verify: true
+    consul_sd_configs:
+    - server: "http://{{ env "attr.unique.network.ip-address" }}:8500"
+      tls_config:
+        insecure_skip_verify: true
+      services: ['traefik']
+#   - job_name: 'vault'
+#     metrics_path: "/v1/sys/metrics"
+#     params:
+#       format: ['prometheus']
+#     scheme: https
+#     tls_config:
+#       insecure_skip_verify: true
+# #    bearer_token: "your_vault_token_here"
+#     static_configs:
+#       - targets: ["active.vault:8200"]
+#     relabel_configs:
+#       - source_labels: [__meta_consul_node]
+#         target_label: instance
