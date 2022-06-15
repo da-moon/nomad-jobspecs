@@ -11,6 +11,12 @@
 !/specs/templated/*/*.yml
 !/specs/templated/*/config
 !/specs/templated/*/config/**
+#  ────────────────────────────────────────────────────────────
+!/contrib
+!/contrib/docker
+!/contrib/docker/*
+!/contrib/docker/*/Dockerfile
+
 #  ────────────────────────────────────────────────────────────────────
 !.devcontainer/alpine.Dockerfile
 !.devcontainer/archlinux.Dockerfile
