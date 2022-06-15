@@ -1,0 +1,13 @@
+---
+service:
+  namespace: "dev-mse"
+  node_class: "dev-mse-service"
+  datacenters :
+    - "bra2"
+  canary: true
+  count: 1
+  disk_size: 300
+  logs_max_files: 10
+  logs_max_file_size: 15
+  ram: 64
+  cpu: 50
