@@ -1,0 +1,14 @@
+---
+service:
+  domain: "dc1.example.com"
+  namespace: "prd"
+  node_class: "prd-service"
+  datacenters :
+    - "dc1"
+  canary: true
+  count: 3
+  disk_size: 600
+  logs_max_files: 10
+  logs_max_file_size: 15
+  ram: 64
+  cpu: 50
